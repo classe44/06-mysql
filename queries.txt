@@ -1,0 +1,74 @@
+Creazione DB per gestire recensioni di videogiochi
+- Software house
+- Videogiochi
+- Recensioni
+
+[software_houses]
+ID
+Nome
+Nazione [VARCHAR(2)]
+Indirizzo
+
+[videogames]
+ID
+Titolo
+Genere
+Data di uscita
+Prezzo 
+Software house ID
+
+[reviews]
+ID
+(Titolo)
+(Autore)
+Testo
+Voto
+Data
+Videogames ID
+
+1) Lista videogiochi
+    SELECT * FROM `videogames`;
+
+2) Quanti videogiochi ci sono nel DB
+    SELECT COUNT(*) AS `totale_videogiochi` FROM `videogames`;
+
+3) Quanti videogiochi iniziano con una data stringa nel titolo (the)
+    SELECT COUNT(*) FROM `videogames` WHERE `videogames`.`title` LIKE 'the%';
+
+3a) Quanti videogiochi contengono una data stringa nel titolo (the)
+    SELECT COUNT(*) FROM `videogames` WHERE `videogames`.`title` LIKE '%the%';
+
+4) Quanti videogiochi per Software house ID
+    SELECT COUNT(*) AS `numero_videogiochi`, `videogames`.`software_house_id` FROM `videogames` GROUP BY `videogames`.`software_house_id`;
+
+5a) Quanti videogiochi per Software house, con nome Software house
+    SELECT 
+        COUNT(*) AS `numero_videogiochi`, 
+        `videogames`.`software_house_id`,
+        `software_houses`.`name`
+    FROM `videogames`
+    JOIN `software_houses` ON `videogames`.`software_house_ID` = `software_houses`.`id`
+    GROUP BY `videogames`.`software_house_id`, `software_houses`.`name`
+
+6) Quanti videogiochi per Software house per anno, con nome Software house
+    SELECT 
+        COUNT(*) AS `numero_videogiochi`, 
+        `videogames`.`software_house_id`,
+        `software_houses`.`name`,
+        YEAR(`videogames`.`release_date`) AS `anno_uscita`
+    FROM `videogames`
+    JOIN `software_houses` ON `videogames`.`software_house_ID` = `software_houses`.`id`
+    GROUP BY `videogames`.`software_house_id`, `software_houses`.`name`, YEAR(`videogames`.`release_date`)
+
+8) Quanti videogiochi hanno più di 30 recensioni, con videogioco ID
+    /* Quanti videogiochi hanno più di 30 recensioni, mi serve solo il videogioco ID */
+    /* Quanti videogiochi hanno più di 30 recensioni, mi serve anche il nome del videogioco */
+
+    SELECT 
+        COUNT(*) AS `numero_recensioni`, 
+        `reviews`.`videogame_ID`,
+        `videogames`.`title`
+    FROM `reviews`
+    JOIN `videogames` ON `reviews`.`videogame_ID` = `videogames`.`id`
+    GROUP BY `reviews`.`videogame_ID`, `videogames`.`title`
+    HAVING `numero_recensioni` > 30
